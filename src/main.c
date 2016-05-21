@@ -1,5 +1,6 @@
 #include <pebble.h>
 #include "main.h"
+#define KEY_LOCATION 0
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
@@ -76,6 +77,12 @@ static void handle_window_unload(Window* window) {
 
 static void inbox_received_callback(DictionaryIterator *iter, void *context) {
   APP_LOG(APP_LOG_LEVEL_INFO, "Message received from phone.");
+  static char location_buffer[60];
+  Tuple *location_tuple = dict_find(iter, KEY_LOCATION);
+  if (location_tuple) {
+    snprintf(location_buffer, sizeof(location_buffer), "%s", location_tuple->value->cstring);
+    text_layer_set_text(s_textlayer_location, location_buffer);
+  }
 }
 
 static void init_watchface(void) {

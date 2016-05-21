@@ -14,9 +14,9 @@ function locationSuccess(pos) {
   var url = apiTarget + pos.coords.latitude + ',' + pos.coords.longitude;
   console.log(url);
   xhrRequest(url, 'GET', function(responseText) {
-    var json = JSON.parse(responseText);
-    console.log(json);
-    var location = "NYI";
+    var response = JSON.parse(responseText);
+    var location = response.results[response.results.length - 2].formatted_address;
+    console.log(location);
     var dictionary = {
       'KEY_LOCATION': location
     };
@@ -36,6 +36,7 @@ function locationError(err) {
 }
 
 function updateIssLocation() {
+  // TODO: Using watch location for testing; pull ISS location from API
   navigator.geolocation.getCurrentPosition(
     locationSuccess,
     locationError,
