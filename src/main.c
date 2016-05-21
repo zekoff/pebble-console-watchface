@@ -14,9 +14,8 @@ static TextLayer *s_textlayer_location;
 
 static void initialise_ui(void) {
   s_window = window_create();
-  window_set_background_color(s_window, GColorClear);
   #ifndef PBL_SDK_3
-    window_set_fullscreen(s_window, true);
+    window_set_fullscreen(s_window, 0);
   #endif
   
   s_res_roboto_condensed_21 = fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21);
@@ -75,16 +74,33 @@ static void handle_window_unload(Window* window) {
   destroy_ui();
 }
 
+static void inbox_received_callback(DictionaryIterator *iter, void *context) {
+  APP_LOG(APP_LOG_LEVEL_INFO, "Message received from phone.");
+}
+
+static void init_watchface(void) {
+  app_message_register_inbox_received(inbox_received_callback);
+  app_message_open(128, 128);
+}
+
 void show_main(void) {
   initialise_ui();
   window_set_window_handlers(s_window, (WindowHandlers) {
     .unload = handle_window_unload,
   });
   window_stack_push(s_window, true);
+  init_watchface();
 }
 
 void hide_main(void) {
   window_stack_remove(s_window, true);
+}
+
+static void request_location_update(void) {
+  DictionaryIterator *iter;
+  app_message_outbox_begin(&iter);
+  dict_write_uint8(iter, 0, 0);
+  app_message_outbox_send();
 }
 
 int main(void) {

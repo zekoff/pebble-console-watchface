@@ -1,5 +1,7 @@
 {
-    "appKeys": {},
+    "appKeys": {
+        "KEY_LOCATION": 0
+    },
     "capabilities": [
         ""
     ],
@@ -12,6 +14,11 @@
     },
     "sdkVersion": "3",
     "shortName": "Console Watchface",
+    "targetPlatforms": [
+        "aplite",
+        "basalt",
+        "chalk"
+    ],
     "uuid": "58211aa9-198b-4af7-be49-79611d13f6bd",
     "versionLabel": "1.0",
     "watchapp": {
