@@ -82,7 +82,7 @@ static void update_time() {
   strftime(hsv_buffer, sizeof(hsv_buffer), "HSV %I:%M", tick_time);
   text_layer_set_text(s_textlayer_hsv_time, hsv_buffer);
   static char day_buffer[10];
-  snprintf(day_buffer, sizeof(day_buffer), "GMT %d", tick_time->tm_yday);
+  snprintf(day_buffer, sizeof(day_buffer), "GMT %d", tick_time->tm_yday + 1);
   text_layer_set_text(s_textlayer_gmt_day, day_buffer);
 }
 
