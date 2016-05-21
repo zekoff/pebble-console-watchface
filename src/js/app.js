@@ -11,12 +11,13 @@ var xhrRequest = function(url, type, callback) {
 };
 
 function locationSuccess(pos) {
-  console.log(pos);
   var url = reverseGeocodeApiTarget + pos.latitude + ',' + pos.longitude;
   console.log(url);
   xhrRequest(url, 'GET', function(responseText) {
     var response = JSON.parse(responseText);
-    var location = response.results[response.results.length - 2].formatted_address;
+    var location = "";
+    if (response.status == "OK")
+      location = response.results[response.results.length > 1 ? response.results.length - 2 : response.results.length - 1].formatted_address;
     console.log(location);
     var dictionary = {
       'KEY_LOCATION': location
@@ -39,12 +40,10 @@ function updateIssLocation() {
   });
 }
 
-Pebble.addEventListener('ready',function(e){
-  console.log('PebbleKit JS ready!');
+Pebble.addEventListener('ready',function(e) {
   updateIssLocation();
 });
 
-Pebble.addEventListener('appmessage', function(e){
-  console.log('AppMessage received!');
+Pebble.addEventListener('appmessage', function(e) {
   updateIssLocation();
 });
