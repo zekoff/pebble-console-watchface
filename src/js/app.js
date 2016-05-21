@@ -1,5 +1,5 @@
-// Example request: "http://maps.googleapis.com/maps/api/geocode/json?latlng=40.714224,-73.961452"
-var apiTarget = 'http://maps.googleapis.com/maps/api/geocode/json?latlng=';
+var reverseGeocodeApiTarget = 'http://maps.googleapis.com/maps/api/geocode/json?latlng=';
+var issLocationApiTarget = 'http://api.open-notify.org/iss-now.json';
 
 var xhrRequest = function(url, type, callback) {
   var xhr = new XMLHttpRequest();
@@ -11,7 +11,8 @@ var xhrRequest = function(url, type, callback) {
 };
 
 function locationSuccess(pos) {
-  var url = apiTarget + pos.coords.latitude + ',' + pos.coords.longitude;
+  console.log(pos);
+  var url = reverseGeocodeApiTarget + pos.latitude + ',' + pos.longitude;
   console.log(url);
   xhrRequest(url, 'GET', function(responseText) {
     var response = JSON.parse(responseText);
@@ -31,17 +32,11 @@ function locationSuccess(pos) {
   });
 }
 
-function locationError(err) {
-  console.log("Error requesting location.");
-}
-
 function updateIssLocation() {
-  // TODO: Using watch location for testing; pull ISS location from API
-  navigator.geolocation.getCurrentPosition(
-    locationSuccess,
-    locationError,
-    {timeout: 15000, maximumAge: 60000}
-  );
+  xhrRequest(issLocationApiTarget, 'GET', function(responseText) {
+    console.log(responseText);
+    locationSuccess(JSON.parse(responseText).iss_position);
+  });
 }
 
 Pebble.addEventListener('ready',function(e){
