@@ -1,0 +1,20 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "zekoff@gmail.com",
+    "enableMultiJS": true,
+    "longName": "Console Watchface",
+    "projectType": "native",
+    "resources": {
+        "media": []
+    },
+    "sdkVersion": "3",
+    "shortName": "Console Watchface",
+    "uuid": "58211aa9-198b-4af7-be49-79611d13f6bd",
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
+}
