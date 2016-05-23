@@ -1,5 +1,5 @@
 var reverseGeocodeApiTarget = 'http://maps.googleapis.com/maps/api/geocode/json?latlng=';
-var issLocationApiTarget = 'http://api.open-notify.org/iss-now.json';
+var issInfoTarget = 'https://api.wheretheiss.at/v1/satellites/25544';
 
 var xhrRequest = function(url, type, callback) {
   var xhr = new XMLHttpRequest();
@@ -10,17 +10,18 @@ var xhrRequest = function(url, type, callback) {
   xhr.send();
 };
 
-function locationSuccess(pos) {
-  var url = reverseGeocodeApiTarget + pos.latitude + ',' + pos.longitude;
+function locationSuccess(info) {
+  var url = reverseGeocodeApiTarget + info.latitude + ',' + info.longitude;
   console.log(url);
   xhrRequest(url, 'GET', function(responseText) {
     var response = JSON.parse(responseText);
     var location = "";
     if (response.status == "OK")
-      location = response.results[response.results.length > 1 ? response.results.length - 2 : response.results.length - 1].formatted_address;
+      location = response.results[response.results.length - 1].formatted_address;
     console.log(location);
     var dictionary = {
-      'KEY_LOCATION': location
+      'KEY_LOCATION': location,
+      'KEY_VISIBILITY': info.visibility == "eclipsed" ? "0" : "1"
     };
     Pebble.sendAppMessage(dictionary,
       function(e) {
@@ -34,9 +35,9 @@ function locationSuccess(pos) {
 }
 
 function updateIssLocation() {
-  xhrRequest(issLocationApiTarget, 'GET', function(responseText) {
+  xhrRequest(issInfoTarget, 'GET', function(responseText) {
     console.log(responseText);
-    locationSuccess(JSON.parse(responseText).iss_position);
+    locationSuccess(JSON.parse(responseText));
   });
 }
 

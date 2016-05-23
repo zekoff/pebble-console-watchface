@@ -1,13 +1,18 @@
 #include <pebble.h>
 #include "main.h"
 #define KEY_LOCATION 0
+#define KEY_VISIBILITY 1
 
 // BEGIN AUTO-GENERATED UI CODE; DO NOT MODIFY
 static Window *s_window;
-static GFont s_res_roboto_condensed_21;
-static GFont s_res_bitham_42_medium_numbers;
-static GFont s_res_gothic_18_bold;
-static GFont s_res_gothic_14;
+static GBitmap *s_res_image_daytime_background;
+static GBitmap *s_res_image_nighttime_background;
+static GFont s_res_font_orbitron_bold_14;
+static GFont s_res_font_orbitron_bold_36;
+static GFont s_res_font_orbitron_14;
+static GFont s_res_font_teko_18;
+static BitmapLayer *s_image_daytime;
+static BitmapLayer *s_image_nighttime;
 static TextLayer *s_textlayer_gmt_day;
 static TextLayer *s_textlayer_gmt_time;
 static TextLayer *s_textlayer_hsv_time;
@@ -16,53 +21,90 @@ static TextLayer *s_textlayer_iss_location;
 static void initialise_ui(void) {
   s_window = window_create();
   #ifndef PBL_SDK_3
-    window_set_fullscreen(s_window, true);
+    window_set_fullscreen(s_window, 1);
   #endif
   
-  s_res_roboto_condensed_21 = fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21);
-  s_res_bitham_42_medium_numbers = fonts_get_system_font(FONT_KEY_BITHAM_42_MEDIUM_NUMBERS);
-  s_res_gothic_18_bold = fonts_get_system_font(FONT_KEY_GOTHIC_18_BOLD);
-  s_res_gothic_14 = fonts_get_system_font(FONT_KEY_GOTHIC_14);
+  s_res_image_daytime_background = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_DAYTIME_BACKGROUND);
+  s_res_image_nighttime_background = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_NIGHTTIME_BACKGROUND);
+  s_res_font_orbitron_bold_14 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ORBITRON_BOLD_14));
+  s_res_font_orbitron_bold_36 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ORBITRON_BOLD_36));
+  s_res_font_orbitron_14 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ORBITRON_14));
+  s_res_font_teko_18 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TEKO_18));
+  // s_image_daytime
+  s_image_daytime = bitmap_layer_create(GRect(0, 0, 144, 168));
+  bitmap_layer_set_bitmap(s_image_daytime, s_res_image_daytime_background);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_image_daytime);
+  
+  // s_image_nighttime
+  s_image_nighttime = bitmap_layer_create(GRect(0, 0, 144, 168));
+  bitmap_layer_set_bitmap(s_image_nighttime, s_res_image_nighttime_background);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_image_nighttime);
+  
   // s_textlayer_gmt_day
-  s_textlayer_gmt_day = text_layer_create(GRect(21, 7, 100, 30));
+  s_textlayer_gmt_day = text_layer_create(GRect(9, 5, 131, 30));
   text_layer_set_background_color(s_textlayer_gmt_day, GColorClear);
   text_layer_set_text(s_textlayer_gmt_day, "GMT 123");
-  text_layer_set_text_alignment(s_textlayer_gmt_day, GTextAlignmentCenter);
-  text_layer_set_font(s_textlayer_gmt_day, s_res_roboto_condensed_21);
+  text_layer_set_text_alignment(s_textlayer_gmt_day, GTextAlignmentRight);
+  text_layer_set_font(s_textlayer_gmt_day, s_res_font_orbitron_bold_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_gmt_day);
   
   // s_textlayer_gmt_time
-  s_textlayer_gmt_time = text_layer_create(GRect(11, 26, 120, 54));
+  s_textlayer_gmt_time = text_layer_create(GRect(0, 19, 142, 54));
   text_layer_set_background_color(s_textlayer_gmt_time, GColorClear);
   text_layer_set_text(s_textlayer_gmt_time, "00:00");
-  text_layer_set_text_alignment(s_textlayer_gmt_time, GTextAlignmentCenter);
-  text_layer_set_font(s_textlayer_gmt_time, s_res_bitham_42_medium_numbers);
+  text_layer_set_text_alignment(s_textlayer_gmt_time, GTextAlignmentRight);
+  text_layer_set_font(s_textlayer_gmt_time, s_res_font_orbitron_bold_36);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_gmt_time);
   
   // s_textlayer_hsv_time
-  s_textlayer_hsv_time = text_layer_create(GRect(20, 89, 100, 34));
+  s_textlayer_hsv_time = text_layer_create(GRect(16, 63, 123, 25));
   text_layer_set_background_color(s_textlayer_hsv_time, GColorClear);
   text_layer_set_text(s_textlayer_hsv_time, "HSV 00:00");
-  text_layer_set_text_alignment(s_textlayer_hsv_time, GTextAlignmentCenter);
-  text_layer_set_font(s_textlayer_hsv_time, s_res_gothic_18_bold);
+  text_layer_set_text_alignment(s_textlayer_hsv_time, GTextAlignmentRight);
+  text_layer_set_font(s_textlayer_hsv_time, s_res_font_orbitron_14);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_hsv_time);
   
   // s_textlayer_iss_location
-  s_textlayer_iss_location = text_layer_create(GRect(6, 142, 131, 20));
+  s_textlayer_iss_location = text_layer_create(GRect(2, 139, 142, 21));
+  text_layer_set_background_color(s_textlayer_iss_location, GColorClear);
   text_layer_set_text(s_textlayer_iss_location, "ISS Location");
   text_layer_set_text_alignment(s_textlayer_iss_location, GTextAlignmentCenter);
-  text_layer_set_font(s_textlayer_iss_location, s_res_gothic_14);
+  text_layer_set_font(s_textlayer_iss_location, s_res_font_teko_18);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_iss_location);
 }
 
 static void destroy_ui(void) {
   window_destroy(s_window);
+  bitmap_layer_destroy(s_image_daytime);
+  bitmap_layer_destroy(s_image_nighttime);
   text_layer_destroy(s_textlayer_gmt_day);
   text_layer_destroy(s_textlayer_gmt_time);
   text_layer_destroy(s_textlayer_hsv_time);
   text_layer_destroy(s_textlayer_iss_location);
+  gbitmap_destroy(s_res_image_daytime_background);
+  gbitmap_destroy(s_res_image_nighttime_background);
+  fonts_unload_custom_font(s_res_font_orbitron_bold_14);
+  fonts_unload_custom_font(s_res_font_orbitron_bold_36);
+  fonts_unload_custom_font(s_res_font_orbitron_14);
+  fonts_unload_custom_font(s_res_font_teko_18);
 }
 // END AUTO-GENERATED UI CODE
+
+static void set_daytime() {
+  layer_set_hidden(bitmap_layer_get_layer(s_image_nighttime), true);
+  text_layer_set_text_color(s_textlayer_gmt_day, GColorBlack);
+  text_layer_set_text_color(s_textlayer_gmt_time, GColorBlack);
+  text_layer_set_text_color(s_textlayer_hsv_time, GColorBlack);
+  APP_LOG(APP_LOG_LEVEL_INFO, "Set to daytime mode.");
+}
+
+static void set_nighttime() {
+  layer_set_hidden(bitmap_layer_get_layer(s_image_nighttime), false);
+  text_layer_set_text_color(s_textlayer_gmt_day, GColorWhite);
+  text_layer_set_text_color(s_textlayer_gmt_time, GColorWhite);
+  text_layer_set_text_color(s_textlayer_hsv_time, GColorWhite);
+  APP_LOG(APP_LOG_LEVEL_INFO, "Set to nighttime mode.");
+}
 
 static void request_location_update(void) {
   DictionaryIterator *iter;
@@ -104,6 +146,13 @@ static void inbox_received_callback(DictionaryIterator *iter, void *context) {
     snprintf(location_buffer, sizeof(location_buffer), "%s", location_tuple->value->cstring);
     text_layer_set_text(s_textlayer_iss_location, location_buffer);
   }
+  Tuple *visibility_tuple = dict_find(iter, KEY_VISIBILITY);
+  if (visibility_tuple) {
+    if (strcmp("0", visibility_tuple->value->cstring) == 0)
+      set_nighttime();
+    else
+      set_daytime();
+  }
 }
 
 static void init_watchface(void) {
@@ -119,6 +168,7 @@ void show_main(void) {
     .unload = handle_window_unload,
   });
   window_stack_push(s_window, true);
+  set_nighttime();
 }
 
 void hide_main(void) {
