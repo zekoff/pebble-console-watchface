@@ -7,9 +7,9 @@
 static Window *s_window;
 static GBitmap *s_res_image_daytime_background;
 static GBitmap *s_res_image_nighttime_background;
-static GFont s_res_font_orbitron_bold_14;
-static GFont s_res_font_orbitron_bold_36;
-static GFont s_res_font_orbitron_14;
+static GFont s_res_font_pragati_bold_24;
+static GFont s_res_font_pragati_bold_72;
+static GFont s_res_font_pragati_24;
 static GFont s_res_font_teko_18;
 static BitmapLayer *s_image_daytime;
 static BitmapLayer *s_image_nighttime;
@@ -26,9 +26,9 @@ static void initialise_ui(void) {
   
   s_res_image_daytime_background = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_DAYTIME_BACKGROUND);
   s_res_image_nighttime_background = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_NIGHTTIME_BACKGROUND);
-  s_res_font_orbitron_bold_14 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ORBITRON_BOLD_14));
-  s_res_font_orbitron_bold_36 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ORBITRON_BOLD_36));
-  s_res_font_orbitron_14 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ORBITRON_14));
+  s_res_font_pragati_bold_24 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PRAGATI_BOLD_24));
+  s_res_font_pragati_bold_72 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PRAGATI_BOLD_72));
+  s_res_font_pragati_24 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_PRAGATI_24));
   s_res_font_teko_18 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_TEKO_18));
   // s_image_daytime
   s_image_daytime = bitmap_layer_create(GRect(0, 0, 144, 168));
@@ -41,31 +41,31 @@ static void initialise_ui(void) {
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_image_nighttime);
   
   // s_textlayer_gmt_day
-  s_textlayer_gmt_day = text_layer_create(GRect(9, 5, 131, 30));
+  s_textlayer_gmt_day = text_layer_create(GRect(9, 0, 131, 30));
   text_layer_set_background_color(s_textlayer_gmt_day, GColorClear);
   text_layer_set_text(s_textlayer_gmt_day, "GMT 123");
   text_layer_set_text_alignment(s_textlayer_gmt_day, GTextAlignmentRight);
-  text_layer_set_font(s_textlayer_gmt_day, s_res_font_orbitron_bold_14);
+  text_layer_set_font(s_textlayer_gmt_day, s_res_font_pragati_bold_24);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_gmt_day);
   
   // s_textlayer_gmt_time
-  s_textlayer_gmt_time = text_layer_create(GRect(0, 19, 142, 54));
+  s_textlayer_gmt_time = text_layer_create(GRect(0, 2, 142, 74));
   text_layer_set_background_color(s_textlayer_gmt_time, GColorClear);
   text_layer_set_text(s_textlayer_gmt_time, "00:00");
   text_layer_set_text_alignment(s_textlayer_gmt_time, GTextAlignmentRight);
-  text_layer_set_font(s_textlayer_gmt_time, s_res_font_orbitron_bold_36);
+  text_layer_set_font(s_textlayer_gmt_time, s_res_font_pragati_bold_72);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_gmt_time);
   
   // s_textlayer_hsv_time
-  s_textlayer_hsv_time = text_layer_create(GRect(16, 63, 123, 25));
+  s_textlayer_hsv_time = text_layer_create(GRect(16, 71, 123, 25));
   text_layer_set_background_color(s_textlayer_hsv_time, GColorClear);
   text_layer_set_text(s_textlayer_hsv_time, "HSV 00:00");
   text_layer_set_text_alignment(s_textlayer_hsv_time, GTextAlignmentRight);
-  text_layer_set_font(s_textlayer_hsv_time, s_res_font_orbitron_14);
+  text_layer_set_font(s_textlayer_hsv_time, s_res_font_pragati_24);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_hsv_time);
   
   // s_textlayer_iss_location
-  s_textlayer_iss_location = text_layer_create(GRect(2, 139, 142, 21));
+  s_textlayer_iss_location = text_layer_create(GRect(2, 145, 140, 22));
   text_layer_set_background_color(s_textlayer_iss_location, GColorClear);
   text_layer_set_text(s_textlayer_iss_location, "ISS Location");
   text_layer_set_text_alignment(s_textlayer_iss_location, GTextAlignmentCenter);
@@ -83,9 +83,9 @@ static void destroy_ui(void) {
   text_layer_destroy(s_textlayer_iss_location);
   gbitmap_destroy(s_res_image_daytime_background);
   gbitmap_destroy(s_res_image_nighttime_background);
-  fonts_unload_custom_font(s_res_font_orbitron_bold_14);
-  fonts_unload_custom_font(s_res_font_orbitron_bold_36);
-  fonts_unload_custom_font(s_res_font_orbitron_14);
+  fonts_unload_custom_font(s_res_font_pragati_bold_24);
+  fonts_unload_custom_font(s_res_font_pragati_bold_72);
+  fonts_unload_custom_font(s_res_font_pragati_24);
   fonts_unload_custom_font(s_res_font_teko_18);
 }
 // END AUTO-GENERATED UI CODE
