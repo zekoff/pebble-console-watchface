@@ -16,5 +16,5 @@ ISS watchface for use on-console by POIC flight controllers in Huntsville. Built
 
 ## Screenshots
 
-![Daytime screenshot](https://github.com/zekoff/pebble-console-watchface/screenshot_day.png)
-![Nighttime screenshot](https://github.com/zekoff/pebble-console-watchface/screenshot_night.png)
+![Daytime screenshot](https://github.com/zekoff/pebble-console-watchface/master/screenshot_day.png)
+![Nighttime screenshot](https://github.com/zekoff/pebble-console-watchface/master/screenshot_night.png)
