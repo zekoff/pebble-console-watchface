@@ -15,13 +15,13 @@ static BitmapLayer *s_image_daytime;
 static BitmapLayer *s_image_nighttime;
 static TextLayer *s_textlayer_gmt_day;
 static TextLayer *s_textlayer_gmt_time;
-static TextLayer *s_textlayer_hsv_time;
+static TextLayer *s_textlayer_local_time;
 static TextLayer *s_textlayer_iss_location;
 
 static void initialise_ui(void) {
   s_window = window_create();
   #ifndef PBL_SDK_3
-    window_set_fullscreen(s_window, 1);
+    window_set_fullscreen(s_window, true);
   #endif
   
   s_res_image_daytime_background = gbitmap_create_with_resource(RESOURCE_ID_IMAGE_DAYTIME_BACKGROUND);
@@ -56,13 +56,13 @@ static void initialise_ui(void) {
   text_layer_set_font(s_textlayer_gmt_time, s_res_font_pragati_bold_72);
   layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_gmt_time);
   
-  // s_textlayer_hsv_time
-  s_textlayer_hsv_time = text_layer_create(GRect(16, 71, 123, 25));
-  text_layer_set_background_color(s_textlayer_hsv_time, GColorClear);
-  text_layer_set_text(s_textlayer_hsv_time, "HSV 00:00");
-  text_layer_set_text_alignment(s_textlayer_hsv_time, GTextAlignmentRight);
-  text_layer_set_font(s_textlayer_hsv_time, s_res_font_pragati_24);
-  layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_hsv_time);
+  // s_textlayer_local_time
+  s_textlayer_local_time = text_layer_create(GRect(16, 71, 123, 25));
+  text_layer_set_background_color(s_textlayer_local_time, GColorClear);
+  text_layer_set_text(s_textlayer_local_time, "LOCAL 00:00");
+  text_layer_set_text_alignment(s_textlayer_local_time, GTextAlignmentRight);
+  text_layer_set_font(s_textlayer_local_time, s_res_font_pragati_24);
+  layer_add_child(window_get_root_layer(s_window), (Layer *)s_textlayer_local_time);
   
   // s_textlayer_iss_location
   s_textlayer_iss_location = text_layer_create(GRect(2, 145, 140, 22));
@@ -79,7 +79,7 @@ static void destroy_ui(void) {
   bitmap_layer_destroy(s_image_nighttime);
   text_layer_destroy(s_textlayer_gmt_day);
   text_layer_destroy(s_textlayer_gmt_time);
-  text_layer_destroy(s_textlayer_hsv_time);
+  text_layer_destroy(s_textlayer_local_time);
   text_layer_destroy(s_textlayer_iss_location);
   gbitmap_destroy(s_res_image_daytime_background);
   gbitmap_destroy(s_res_image_nighttime_background);
@@ -94,7 +94,7 @@ static void set_daytime() {
   layer_set_hidden(bitmap_layer_get_layer(s_image_nighttime), true);
   text_layer_set_text_color(s_textlayer_gmt_day, GColorBlack);
   text_layer_set_text_color(s_textlayer_gmt_time, GColorBlack);
-  text_layer_set_text_color(s_textlayer_hsv_time, GColorBlack);
+  text_layer_set_text_color(s_textlayer_local_time, GColorBlack);
   APP_LOG(APP_LOG_LEVEL_INFO, "Set to daytime mode.");
 }
 
@@ -102,7 +102,7 @@ static void set_nighttime() {
   layer_set_hidden(bitmap_layer_get_layer(s_image_nighttime), false);
   text_layer_set_text_color(s_textlayer_gmt_day, GColorWhite);
   text_layer_set_text_color(s_textlayer_gmt_time, GColorWhite);
-  text_layer_set_text_color(s_textlayer_hsv_time, GColorWhite);
+  text_layer_set_text_color(s_textlayer_local_time, GColorWhite);
   APP_LOG(APP_LOG_LEVEL_INFO, "Set to nighttime mode.");
 }
 
@@ -120,9 +120,9 @@ static void update_time() {
   strftime(gmt_buffer, sizeof(gmt_buffer), "%H:%M", tick_time);
   text_layer_set_text(s_textlayer_gmt_time, gmt_buffer);
   tick_time = localtime(&temp);
-  static char hsv_buffer[12];
-  strftime(hsv_buffer, sizeof(hsv_buffer), "HSV %I:%M", tick_time);
-  text_layer_set_text(s_textlayer_hsv_time, hsv_buffer);
+  static char local_buffer[12];
+  strftime(local_buffer, sizeof(local_buffer), "LOCAL %H:%M", tick_time);
+  text_layer_set_text(s_textlayer_local_time, local_buffer);
   static char day_buffer[10];
   snprintf(day_buffer, sizeof(day_buffer), "GMT %d", tick_time->tm_yday + 1);
   text_layer_set_text(s_textlayer_gmt_day, day_buffer);
@@ -130,8 +130,7 @@ static void update_time() {
 
 static void tick_handler(struct tm *tick_time, TimeUnits units_changed) {
   update_time();
-  if (tick_time->tm_min % 5 == 0)
-    request_location_update();
+  request_location_update();
 }
 
 static void handle_window_unload(Window* window) {
