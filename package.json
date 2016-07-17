@@ -91,13 +91,12 @@
         "sdkVersion": "3",
         "targetPlatforms": [
             "aplite",
-            "basalt",
-            "chalk"
+            "basalt"
         ],
         "uuid": "58211aa9-198b-4af7-be49-79611d13f6bd",
         "watchapp": {
             "watchface": true
         }
     },
-    "version": "1.0.0"
+    "version": "1.1.0"
 }
